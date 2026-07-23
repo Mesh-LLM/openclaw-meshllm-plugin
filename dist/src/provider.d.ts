@@ -1,0 +1,10 @@
+import type { ModelDefinitionConfig, ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
+import type { MeshPluginConfig } from "./config.js";
+import type { MeshDiscoveredModel } from "./runtime.js";
+export declare const MESH_PROVIDER_ID = "meshllm";
+export declare const MESH_API_ID = "openai-completions";
+export declare const MESH_AUTH_MARKER = "meshllm-node-sdk";
+export declare function toModelDefinition(model: MeshDiscoveredModel, config: MeshPluginConfig): ModelDefinitionConfig;
+export declare function buildMeshProviderConfig(models: MeshDiscoveredModel[], config: MeshPluginConfig): ModelProviderConfig;
+export declare function buildDynamicMeshModel(modelId: string, config: MeshPluginConfig): ProviderRuntimeModel;

@@ -1,0 +1,158 @@
+{
+  "id": "meshllm",
+  "name": "MeshLLM",
+  "description": "Use a MeshLLM mesh as an OpenClaw model provider and optionally serve a local model into it",
+  "activation": {
+    "onStartup": true
+  },
+  "providers": ["meshllm"],
+  "modelSupport": {
+    "modelPrefixes": ["meshllm/"]
+  },
+  "setup": {
+    "providers": [
+      {
+        "id": "meshllm",
+        "envVars": ["MESH_SDK_INVITE_TOKEN", "MESH_SDK_OWNER_KEYPAIR_HEX"]
+      }
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "mode": {
+        "type": "string",
+        "enum": ["client", "node"],
+        "default": "client"
+      },
+      "inviteToken": {
+        "type": "string",
+        "minLength": 1
+      },
+      "ownerKeypairHex": {
+        "type": "string",
+        "minLength": 1
+      },
+      "cacheDir": {
+        "type": "string",
+        "minLength": 1
+      },
+      "runtimeDir": {
+        "type": "string",
+        "minLength": 1
+      },
+      "modelRef": {
+        "type": "string",
+        "minLength": 1
+      },
+      "downloadModel": {
+        "type": "boolean",
+        "default": true
+      },
+      "devicePolicy": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": ["auto", "cpu", "gpu"]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["gpu"],
+            "properties": {
+              "gpu": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "inferenceTimeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "default": 120000
+      },
+      "contextWindow": {
+        "type": "integer",
+        "minimum": 1024,
+        "default": 32768
+      },
+      "maxTokens": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 8192
+      },
+      "unloadDrainTimeoutMs": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 10000
+      },
+      "nativeRuntime": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "artifactDir": {
+            "type": "string",
+            "minLength": 1
+          },
+          "searchDirs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "cacheDir": {
+            "type": "string",
+            "minLength": 1
+          },
+          "selection": {
+            "type": "string",
+            "minLength": 1
+          },
+          "manifestPath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "manifestUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "allowDownload": {
+            "type": "boolean",
+            "default": false
+          },
+          "verificationPolicy": {
+            "type": "string",
+            "enum": ["require_checksum", "require_checksum_and_signature"]
+          }
+        }
+      }
+    }
+  },
+  "uiHints": {
+    "inviteToken": {
+      "label": "Mesh invite token",
+      "sensitive": true
+    },
+    "ownerKeypairHex": {
+      "label": "Stable Mesh owner keypair",
+      "sensitive": true
+    },
+    "modelRef": {
+      "label": "Local model reference (node mode)"
+    },
+    "nativeRuntime.artifactDir": {
+      "label": "Native runtime artifact directory"
+    },
+    "nativeRuntime.allowDownload": {
+      "label": "Allow native runtime download"
+    }
+  }
+}

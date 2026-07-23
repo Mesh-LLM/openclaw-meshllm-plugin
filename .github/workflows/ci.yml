@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out plugin
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: openclaw-meshllm
+
+      - name: Check out MeshLLM Node SDK
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: Mesh-LLM/mesh-llm
+          path: mesh-llm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: openclaw-meshllm/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: openclaw-meshllm
+
+      - name: Build and test
+        run: npm test
+        working-directory: openclaw-meshllm
+
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev
+        working-directory: openclaw-meshllm
+
+      - name: Verify package contents
+        run: npm pack --dry-run
+        working-directory: openclaw-meshllm
